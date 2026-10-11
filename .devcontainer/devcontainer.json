@@ -1,6 +1,7 @@
 {
 	"name": "ghūl scratchpad",
-	"image": "mcr.microsoft.com/dotnet/sdk:10.0",
+	"image": "mcr.microsoft.com/devcontainers/dotnet:10.0",
+	"remoteUser": "vscode",
 	"onCreateCommand": "dotnet tool restore && dotnet tool update --local ghul.compiler && dotnet build",
 	"customizations": {
 		"vscode": {
