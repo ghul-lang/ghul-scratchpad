@@ -1,0 +1,26 @@
+{
+    "default": "dotnet",
+    "configurations": {
+        "base": {
+            "compiler": { "path": "COMPILER_DLL" },
+            "runtime": "beside-compiler",
+            "targets": {
+                "wasm": {
+                    "libraries": [
+                        { "name": "ghul-core", "root": ["libraries/ghul-core"], "sources": "src/**/*.ghul" },
+                        { "name": "ghul-runtime", "root": ["libraries/ghul-runtime"], "sources": "@wasm-sources.rsp" }
+                    ]
+                },
+                "llvm": {
+                    "libraries": [
+                        { "name": "ghul-core", "root": ["libraries/ghul-core"], "sources": "src/**/*.ghul" },
+                        { "name": "ghul-runtime", "root": ["libraries/ghul-runtime"], "sources": "@wasm-sources.rsp" }
+                    ]
+                }
+            }
+        },
+        "dotnet": { "extends": "base", "build_targets": ["dotnet"], "run_targets": ["dotnet"] },
+        "wasm": { "extends": "base", "build_targets": ["wasm"], "run_targets": ["wasm"] },
+        "llvm": { "extends": "base", "build_targets": ["llvm"], "run_targets": ["llvm"] }
+    }
+}

@@ -1,0 +1,88 @@
+name: measure cross-target execution suite
+
+# Throwaway: times ghul's execution integration tests built and run for each
+# target, sharded as CI shards the integration suite. Lives on a branch only.
+
+on:
+  push:
+    branches: [ghul-coder/measure-cross-target]
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_NOLOGO: 1
+
+jobs:
+  measure:
+    name: ${{ matrix.target }} ${{ matrix.shard }}/5
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        target: [dotnet, wasm, llvm]
+        shard: [1, 2, 3, 4, 5]
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          repository: ghul-lang/ghul
+          path: ghul
+
+      - uses: actions/checkout@v7
+        with:
+          repository: ghul-lang/ghul-core
+          path: ghul/libraries/ghul-core
+
+      - uses: actions/checkout@v7
+        with:
+          repository: ghul-lang/ghul-runtime
+          path: ghul/libraries/ghul-runtime
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Tools at the latest published versions
+        working-directory: ghul
+        run: |
+          dotnet tool restore
+          dotnet tool update --local ghul.compiler
+          dotnet tool update --local ghul.test
+
+      - name: ghul-llvm
+        if: matrix.target == 'llvm'
+        working-directory: ghul
+        run: |
+          linker=$(build/ghul-llvm.sh "$HOME/ghul-llvm" | tail -1)
+          echo "$(dirname "$linker")" >> "$GITHUB_PATH"
+          echo "GHUL_LLVM=$linker" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v7
+        with:
+          path: measure
+
+      - name: Run the shard
+        working-directory: ghul
+        shell: bash
+        run: |
+          version=$(dotnet tool list --local | awk '$1 == "ghul.compiler" { print $2 }')
+          sed "s#COMPILER_DLL#$HOME/.nuget/packages/ghul.compiler/$version/tools/net10.0/any/ghul.dll#" ../measure/ghul-test.json > ghul-test.json
+          start=$(date +%s)
+          dotnet ghul-test --config ${{ matrix.target }} --shard ${{ matrix.shard }}/5 integration-tests/execution > results.txt 2>&1 || true
+          end=$(date +%s)
+          tail -5 results.txt
+          passed=$(grep -c "pass:" results.txt || true)
+          failed=$(grep -c "fail:" results.txt || true)
+          echo "| ${{ matrix.target }} | ${{ matrix.shard }} | $((end - start)) | $passed | $failed | $(nproc) |" >> "$GITHUB_STEP_SUMMARY"
+          echo "TIMING ${{ matrix.target }} ${{ matrix.shard }} seconds=$((end - start)) passed=$passed failed=$failed nproc=$(nproc)"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: results-${{ matrix.target }}-${{ matrix.shard }}
+          path: ghul/results.txt
