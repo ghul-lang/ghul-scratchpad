@@ -1,6 +1,6 @@
 # ghūl scratchpad
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/degory/ghul-scratchpad?quickstart=1)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ghul-lang/ghul-scratchpad?quickstart=1)
 
 A one-file [ghūl](https://ghul.dev) project for trying the language out. Open it in a GitHub Codespace and you get an editor with the compiler, the runtime and the ghūl language extension already installed, so an example from the website runs as soon as you paste it in.
 
@@ -13,7 +13,7 @@ Click the badge above. The container installs the compiler and builds the projec
 You need the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0), and [Visual Studio Code](https://code.visualstudio.com/) with the [ghūl extension](https://marketplace.visualstudio.com/items?itemName=degory.ghul) for error highlighting, hover and completion:
 
 ```sh
-git clone https://github.com/degory/ghul-scratchpad.git
+git clone https://github.com/ghul-lang/ghul-scratchpad.git
 cd ghul-scratchpad
 dotnet tool restore
 ```
@@ -54,4 +54,4 @@ To spread a program over several files, add them next to `main.ghul` and give ea
 
 ## issues
 
-[View open issues](https://github.com/degory/ghul/issues?q=is%3Aopen+is%3Aissue+label%3Aghul-scratchpad) or [raise a new one](https://github.com/degory/ghul/issues/new?labels=ghul-scratchpad).
+[View open issues](https://github.com/ghul-lang/ghul/issues?q=is%3Aopen+is%3Aissue+label%3Aghul-scratchpad) or [raise a new one](https://github.com/ghul-lang/ghul/issues/new?labels=ghul-scratchpad).
