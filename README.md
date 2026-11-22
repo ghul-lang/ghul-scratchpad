@@ -48,7 +48,6 @@ To spread a program over several files, add them next to `main.ghul` and give ea
 | `main.ghul` | the program |
 | `scratchpad.ghulproj` | the project: .NET 10 executable, referencing `ghul.runtime` |
 | `.config/dotnet-tools.json` | pins the `ghul.compiler` tool version |
-| `ghul.json` | tells the language extension to keep the compiler tool up to date |
 | `.devcontainer/` | the Codespace and dev container definition |
 | `.vscode/` | build and run tasks, and the extension recommendation |
 
